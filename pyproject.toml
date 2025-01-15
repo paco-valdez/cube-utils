@@ -1,0 +1,24 @@
+[project]
+name = "cube-utils"
+version = "0.1.0"
+description = "Python functions for Cube projects using cube.py config file."
+authors = [
+    {name = "Paco Valdez", email = "paco.valdez@berkeley.edu"},
+]
+dependencies = []
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+test = [
+    "pytest>=7.4.0",
+]
