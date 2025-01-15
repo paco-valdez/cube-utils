@@ -14,9 +14,9 @@ pip install cube-utils
 Usage
 Here is an example of how to use the extract_cubes function from the cube_utils.query_parser module:
 
+```python
 from cube_utils.query_parser import extract_cubes
 
-```python
 # Example payload
 payload = {
     "dimensions": ["test_a.city", "test_a.country", "test_a.state"],
