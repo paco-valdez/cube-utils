@@ -20,11 +20,9 @@ def extract_cubes(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from filters
     if "filters" in payload:
         for filter_item in payload["filters"]:
-            if "member" in filter_item:
-                cube = filter_item["member"].split(".")[0]
-                cubes.add(cube)
-                
-     # Extract cubes from segments
+            cubes.update(extract_members_from_filter(filter_item))
+
+    # Extract cubes from segments
     if "segments" in payload:
         for segment in payload["segments"]:
             cube = segment.split(".")[0]
@@ -38,3 +36,25 @@ def extract_cubes(payload: Dict[str, Any]) -> List[str]:
                 cubes.add(cube)
 
     return list(cubes)
+
+
+# Extracts filters and handles boolean logic recursively
+def extract_members_from_filter(filter_item):
+    members = set()
+
+    # Handle direct member filters
+    if "member" in filter_item:
+        cube = filter_item["member"].split(".")[0]
+        members.add(cube)
+
+    # Handle AND conditions
+    if "and" in filter_item:
+        for condition in filter_item["and"]:
+            members.update(extract_members_from_filter(condition))
+
+    # Handle OR conditions
+    if "or" in filter_item:
+        for condition in filter_item["or"]:
+            members.update(extract_members_from_filter(condition))
+
+    return members
