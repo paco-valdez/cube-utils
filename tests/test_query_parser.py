@@ -23,6 +23,52 @@ class TestExtractCubes(unittest.TestCase):
         expected_cubes = ["test_a", "test_b", "test_c", "test_d"]
         self.assertEqual(sorted(extract_cubes(payload)), sorted(expected_cubes))
 
+    def test_complex_boolean_logic(self):
+        payload = {
+                "segments": [],
+                "filters": [
+                    {
+                        "or": [
+                            {
+                                "and": [
+                                    {
+                                        "values": [
+                                            "Corpus Christi"
+                                        ],
+                                        "member": "test_a.city",
+                                        "operator": "equals"
+                                    },
+                                    {
+                                        "member": "test_b.age_bucket",
+                                        "operator": "equals",
+                                        "values": [
+                                            "Senior adult"
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "member": "test_c.city",
+                                "operator": "equals",
+                                "values": [
+                                    "Sacramento"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "or": [
+                            {
+                                "member": "test_d.city",
+                                "operator": "set"
+                            }
+                        ]
+                    }
+                ],
+        }
+        expected_cubes = ["test_a", "test_b", "test_c", "test_d"]
+        self.assertEqual(sorted(extract_cubes(payload)), sorted(expected_cubes))
+
     def test_extract_cubes_with_dimensions_only(self):
         payload = {"dimensions": ["test_a.city", "test_a.country", "test_a.state"]}
         expected_cubes = ["test_a"]
