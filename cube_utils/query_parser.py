@@ -23,6 +23,12 @@ def extract_cubes(payload: Dict[str, Any]) -> List[str]:
             if "member" in filter_item:
                 cube = filter_item["member"].split(".")[0]
                 cubes.add(cube)
+                
+     # Extract cubes from segments
+    if "segments" in payload:
+        for segment in payload["segments"]:
+            cube = segment.split(".")[0]
+            cubes.add(cube)
 
     # Extract cubes from timeDimensions
     if "timeDimensions" in payload:

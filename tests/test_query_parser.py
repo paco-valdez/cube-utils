@@ -11,6 +11,7 @@ class TestExtractCubes(unittest.TestCase):
             "filters": [
                 {"values": ["US"], "member": "test_a.country", "operator": "equals"}
             ],
+            "segments": ["test_d.us_segment"],
             "timeDimensions": [
                 {
                     "dimension": "test_c.time",
@@ -19,7 +20,7 @@ class TestExtractCubes(unittest.TestCase):
                 }
             ],
         }
-        expected_cubes = ["test_a", "test_b", "test_c"]
+        expected_cubes = ["test_a", "test_b", "test_c", "test_d"]
         self.assertEqual(sorted(extract_cubes(payload)), sorted(expected_cubes))
 
     def test_extract_cubes_with_dimensions_only(self):
@@ -38,6 +39,11 @@ class TestExtractCubes(unittest.TestCase):
                 {"values": ["US"], "member": "test_a.country", "operator": "equals"}
             ]
         }
+        expected_cubes = ["test_a"]
+        self.assertEqual(sorted(extract_cubes(payload)), sorted(expected_cubes))
+
+    def test_extract_cubes_with_segments_only(self):
+        payload = {"segments": ["test_a.us_segment"]}
         expected_cubes = ["test_a"]
         self.assertEqual(sorted(extract_cubes(payload)), sorted(expected_cubes))
 
