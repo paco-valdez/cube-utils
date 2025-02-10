@@ -11,6 +11,12 @@ You can install Cube Utils using pip:
 pip install cube-utils
 ```
 
+If you are using Cube, just add `cube-utils` to your requirements.txt file. e.g.
+
+```sh
+cube-utils
+```
+
 Usage
 Here is an example of how to use the extract_cubes function from the cube_utils.query_parser module:
 
