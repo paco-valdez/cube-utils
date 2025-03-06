@@ -6,7 +6,6 @@ Cube Utils is a Python library for parsing and extracting information from query
 
 You can install Cube Utils using pip:
 
-
 ```sh
 pip install cube-utils
 ```
@@ -17,11 +16,11 @@ If you are using Cube, just add `cube-utils` to your requirements.txt file. e.g.
 cube-utils
 ```
 
-Usage
-Here is an example of how to use the extract_cubes function from the cube_utils.query_parser module:
+## Usage
+Here is an example of how to use the `extract_cubes` and `extract_members` functions from the `cube_utils.query_parser` module:
 
 ```python
-from cube_utils.query_parser import extract_cubes
+from cube_utils.query_parser import extract_cubes, extract_members
 
 # Example payload
 payload = {
@@ -42,6 +41,10 @@ payload = {
 # Extract cubes
 cubes = extract_cubes(payload)
 print(cubes)  # Output: ['test_a', 'test_b', 'test_c']
+
+# Extract members
+members = extract_members(payload)
+print(members)  # Output: ['test_a.city', 'test_a.country', 'test_a.state', 'test_b.count', 'test_c.time']
 ```
 
 ## Running Tests
