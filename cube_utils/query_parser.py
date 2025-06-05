@@ -52,11 +52,12 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
                     members.add(f"{item['cubeName']}.{item['expressionName']}")
                 elif key == "filters":
                     members.update(extract_members_from_filter(item))
-                elif key == "timeDimensions":
-                    if isinstance(item, dict) and "dimension" in item:
-                        members.add(item["dimension"])
-                    elif is_pushdown_member(item):
-                        members.add(f"{item['cubeName']}.{item['expressionName']}")
+                elif (
+                    key == "timeDimensions"
+                    and isinstance(item, dict)
+                    and "dimension" in item
+                ):
+                    members.add(item["dimension"])
                 else:
                     members.add(item)
 
