@@ -18,11 +18,19 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from dimensions
     if "dimensions" in payload:
         for dimension in payload["dimensions"]:
+            if type(dimension) is dict:
+                members.add(f"{dimension['cubeName']}.{dimension['expressionName']}")
+                continue
+
             members.add(dimension)
 
     # Extract cubes from measures
     if "measures" in payload:
         for measure in payload["measures"]:
+            if type(measure) is dict:
+                members.add(f"{measure['cubeName']}.{measure['expressionName']}")
+                continue
+
             members.add(measure)
 
     # Extract cubes from filters

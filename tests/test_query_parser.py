@@ -56,6 +56,55 @@ class TestExtractCubes(unittest.TestCase):
         expected_cubes = ["test_a", "test_b", "test_c", "test_d"]
         self.assertEqual(sorted(extract_cubes(payload)), sorted(expected_cubes))
 
+    def test_pushed_down_query_with_measures(self):
+        payload = {
+            "segments": [],
+            "timezone": "UTC",
+            "measures": [
+                {
+                    "cubeName": "test_a",
+                    "name": "foo",
+                    "expressionName": "foo",
+                    "definition": '{"cubeName":"test_a","alias":"foo","expr":{"type":"SqlFunction","cubeParams":["test_a"],"sql":"MIN(${test_a.active_from_at})"},"groupingSet":null}',
+                    "expression": [
+                        "test_a",
+                        "return `MIN(${test_a.active_from_at})`",
+                    ],
+                    "groupingSet": None,
+                },
+                {
+                    "definition": '{"cubeName":"test_b","alias":"bar","expr":{"type":"SqlFunction","cubeParams":["test_b"],"sql":"MAX(${test_b.active_from_at})"},"groupingSet":null}',
+                    "groupingSet": None,
+                    "expression": [
+                        "test_b",
+                        "return `MAX(${test_b.active_from_at})`",
+                    ],
+                    "name": "bar",
+                    "cubeName": "test_b",
+                    "expressionName": "bar",
+                },
+                {
+                    "name": "count_uint8_1__",
+                    "expressionName": "count_uint8_1__",
+                    "groupingSet": None,
+                    "cubeName": "test_c",
+                    "expression": [
+                        "test_c",
+                        "return `${test_c.count}`",
+                    ],
+                    "definition": '{"cubeName":"test_c","alias":"count_uint8_1__","expr":{"type":"SqlFunction","cubeParams":["test_c"],"sql":"${test_c.count}"},"groupingSet":null}',
+                },
+            ],
+            "filters": [],
+            "timeDimensions": [],
+            "order": [],
+            "dimensions": [],
+            "subqueryJoins": [],
+            "limit": None,
+        }
+        expected_cubes = ["test_a", "test_b", "test_c"]
+        self.assertEqual(sorted(extract_cubes(payload)), sorted(expected_cubes))
+
     def test_extract_cubes_with_dimensions_only(self):
         payload = {"dimensions": ["test_a.city", "test_a.country", "test_a.state"]}
         expected_cubes = ["test_a"]
