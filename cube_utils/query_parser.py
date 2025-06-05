@@ -37,53 +37,28 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     """
     members = set()  # Use a set to ensure uniqueness
 
-    # Extract cubes from dimensions
-    if "dimensions" in payload:
-        for dimension in payload["dimensions"]:
-            if is_pushdown_member(dimension):
-                members.add(f"{dimension['cubeName']}.{dimension['expressionName']}")
-                continue
+    query_keys = [
+        "dimensions",
+        "measures",
+        "filters",
+        "segments",
+        "timeDimensions",
+    ]
 
-            members.add(dimension)
-
-    # Extract cubes from measures
-    if "measures" in payload:
-        for measure in payload["measures"]:
-            if is_pushdown_member(measure):
-                members.add(f"{measure['cubeName']}.{measure['expressionName']}")
-                continue
-
-            members.add(measure)
-
-    # Extract cubes from filters
-    if "filters" in payload:
-        for filter_item in payload["filters"]:
-            if is_pushdown_member(filter_item):
-                members.add(
-                    f"{filter_item['cubeName']}.{filter_item['expressionName']}"
-                )
-                continue
-
-            members.update(extract_members_from_filter(filter_item))
-
-    # Extract cubes from segments
-    if "segments" in payload:
-        for segment in payload["segments"]:
-            if is_pushdown_member(segment):
-                members.add(f"{segment['cubeName']}.{segment['expressionName']}")
-                continue
-
-            members.add(segment)
-
-    # Extract cubes from timeDimensions
-    if "timeDimensions" in payload:
-        for time_dimension in payload["timeDimensions"]:
-            if isinstance(time_dimension, dict) and "dimension" in time_dimension:
-                members.add(time_dimension["dimension"])
-            elif is_pushdown_member(time_dimension):
-                members.add(
-                    f"{time_dimension['cubeName']}.{time_dimension['expressionName']}"
-                )
+    for key in query_keys:
+        if key in payload:
+            for item in payload[key]:
+                if is_pushdown_member(item):
+                    members.add(f"{item['cubeName']}.{item['expressionName']}")
+                elif key == "filters":
+                    members.update(extract_members_from_filter(item))
+                elif key == "timeDimensions":
+                    if isinstance(item, dict) and "dimension" in item:
+                        members.add(item["dimension"])
+                    elif is_pushdown_member(item):
+                        members.add(f"{item['cubeName']}.{item['expressionName']}")
+                else:
+                    members.add(item)
 
     return list(members)
 
