@@ -36,11 +36,19 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from filters
     if "filters" in payload:
         for filter_item in payload["filters"]:
+            if type(filter_item) is dict:
+                members.add(f"{filter_item['cubeName']}.{filter_item['expressionName']}")
+                continue
+
             members.update(extract_members_from_filter(filter_item))
 
     # Extract cubes from segments
     if "segments" in payload:
         for segment in payload["segments"]:
+            if type(segment) is dict:
+                members.add(f"{segment['cubeName']}.{segment['expressionName']}")
+                continue
+
             members.add(segment)
 
     # Extract cubes from timeDimensions
