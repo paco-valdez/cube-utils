@@ -18,7 +18,7 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from dimensions
     if "dimensions" in payload:
         for dimension in payload["dimensions"]:
-            if type(dimension) is dict:
+            if type(dimension) is dict and 'cubeName' in dimension and 'expressionName' in dimension:
                 members.add(f"{dimension['cubeName']}.{dimension['expressionName']}")
                 continue
 
@@ -27,7 +27,7 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from measures
     if "measures" in payload:
         for measure in payload["measures"]:
-            if type(measure) is dict:
+            if type(measure) is dict and 'cubeName' in measure and 'expressionName' in measure:
                 members.add(f"{measure['cubeName']}.{measure['expressionName']}")
                 continue
 
@@ -36,7 +36,7 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from filters
     if "filters" in payload:
         for filter_item in payload["filters"]:
-            if type(filter_item) is dict:
+            if type(filter_item) is dict and 'cubeName' in filter_item and 'expressionName' in filter_item:
                 members.add(f"{filter_item['cubeName']}.{filter_item['expressionName']}")
                 continue
 
@@ -45,7 +45,7 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from segments
     if "segments" in payload:
         for segment in payload["segments"]:
-            if type(segment) is dict:
+            if type(segment) is dict and 'cubeName' in segment and 'expressionName' in segment:
                 members.add(f"{segment['cubeName']}.{segment['expressionName']}")
                 continue
 
@@ -56,6 +56,8 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
         for time_dimension in payload["timeDimensions"]:
             if "dimension" in time_dimension:
                 members.add(time_dimension["dimension"])
+            elif 'cubeName' in time_dimension and 'expressionName' in time_dimension:
+                members.add(f"{time_dimension['cubeName']}.{time_dimension['expressionName']}")
 
     return list(members)
 
