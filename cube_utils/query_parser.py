@@ -1,8 +1,25 @@
 from typing import List, Dict, Any
 
 
+def is_pushdown_member(member: Any) -> bool:
+    """
+    Check if a member is a pushdown member.
+    A pushdown member is a dictionary with 'cubeName' and 'expressionName' keys.
+    :param member: The member to check.
+    :return: True if the member is a pushdown member, False otherwise.
+    """
+    return (
+        isinstance(member, dict) and "cubeName" in member and "expressionName" in member
+    )
+
+
 # Function to extract cubes from a query payload
 def extract_cubes(payload: Dict[str, Any]) -> List[str]:
+    """
+    Extracts unique cubes from the given query payload.
+    :param payload: The query payload containing dimensions, measures, filters, segments, and time dimensions.
+    :return: A list of unique cube names.
+    """
     cubes = set()
     members = extract_members(payload)
     for member in members:
@@ -13,12 +30,17 @@ def extract_cubes(payload: Dict[str, Any]) -> List[str]:
 
 # Function to extract cube members
 def extract_members(payload: Dict[str, Any]) -> List[str]:
+    """
+    Extracts unique members from the given query payload.
+    :param payload: The query payload containing dimensions, measures, filters, segments, and time dimensions.
+    :return: A list of unique members in the format 'cubeName.expressionName'.
+    """
     members = set()  # Use a set to ensure uniqueness
 
     # Extract cubes from dimensions
     if "dimensions" in payload:
         for dimension in payload["dimensions"]:
-            if type(dimension) is dict and 'cubeName' in dimension and 'expressionName' in dimension:
+            if is_pushdown_member(dimension):
                 members.add(f"{dimension['cubeName']}.{dimension['expressionName']}")
                 continue
 
@@ -27,7 +49,7 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from measures
     if "measures" in payload:
         for measure in payload["measures"]:
-            if type(measure) is dict and 'cubeName' in measure and 'expressionName' in measure:
+            if is_pushdown_member(measure):
                 members.add(f"{measure['cubeName']}.{measure['expressionName']}")
                 continue
 
@@ -36,8 +58,10 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from filters
     if "filters" in payload:
         for filter_item in payload["filters"]:
-            if type(filter_item) is dict and 'cubeName' in filter_item and 'expressionName' in filter_item:
-                members.add(f"{filter_item['cubeName']}.{filter_item['expressionName']}")
+            if is_pushdown_member(filter_item):
+                members.add(
+                    f"{filter_item['cubeName']}.{filter_item['expressionName']}"
+                )
                 continue
 
             members.update(extract_members_from_filter(filter_item))
@@ -45,7 +69,7 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from segments
     if "segments" in payload:
         for segment in payload["segments"]:
-            if type(segment) is dict and 'cubeName' in segment and 'expressionName' in segment:
+            if is_pushdown_member(segment):
                 members.add(f"{segment['cubeName']}.{segment['expressionName']}")
                 continue
 
@@ -54,16 +78,23 @@ def extract_members(payload: Dict[str, Any]) -> List[str]:
     # Extract cubes from timeDimensions
     if "timeDimensions" in payload:
         for time_dimension in payload["timeDimensions"]:
-            if "dimension" in time_dimension:
+            if isinstance(time_dimension, dict) and "dimension" in time_dimension:
                 members.add(time_dimension["dimension"])
-            elif 'cubeName' in time_dimension and 'expressionName' in time_dimension:
-                members.add(f"{time_dimension['cubeName']}.{time_dimension['expressionName']}")
+            elif is_pushdown_member(time_dimension):
+                members.add(
+                    f"{time_dimension['cubeName']}.{time_dimension['expressionName']}"
+                )
 
     return list(members)
 
 
 # Extracts filters and handles boolean logic recursively
-def extract_members_from_filter(filter_item):
+def extract_members_from_filter(filter_item: Dict[str, Any]) -> set:
+    """
+    Extracts members from a filter item, handling boolean logic (AND/OR) recursively.
+    :param filter_item: The filter item to extract members from.
+    :return: A set of unique members extracted from the filter item.
+    """
     members = set()
 
     # Handle direct member filters
