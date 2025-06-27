@@ -47,6 +47,17 @@ members = extract_members(payload)
 print(members)  # Output: ['test_a.city', 'test_a.country', 'test_a.state', 'test_b.count', 'test_c.time']
 ```
 
+## URL Parameter Extraction
+You can extract query parameters from a URL using the `extract_url_params` function from the `cube_utils.url_parser` module:
+
+```python
+from cube_utils.url_parser import extract_url_params
+
+url = "https://example.com/?foo=bar&baz=qux"
+params = extract_url_params(url)
+print(params)  # Output: {'foo': 'bar', 'baz': 'qux'}
+```
+
 ## Running Tests
 To run the tests, use the following command:
     
