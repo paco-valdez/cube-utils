@@ -29,6 +29,7 @@ payload = {
     "filters": [
         {"values": ["US"], "member": "test_a.country", "operator": "equals"}
     ],
+    "segments": ["test_d.us_segment"],
     "timeDimensions": [
         {
             "dimension": "test_c.time",
@@ -40,11 +41,41 @@ payload = {
 
 # Extract cubes
 cubes = extract_cubes(payload)
-print(cubes)  # Output: ['test_a', 'test_b', 'test_c']
+print(cubes)  # Output: ['test_a', 'test_b', 'test_c', 'test_d']
 
 # Extract members
 members = extract_members(payload)
-print(members)  # Output: ['test_a.city', 'test_a.country', 'test_a.state', 'test_b.count', 'test_c.time']
+print(members)  # Output: ['test_a.city', 'test_a.country', 'test_a.state', 'test_b.count', 'test_a.country', 'test_d.us_segment', 'test_c.time']
+
+# Extract members from specific query keys only
+dimensions_and_measures = extract_members(payload, query_keys=["dimensions", "measures"])
+print(dimensions_and_measures)  # Output: ['test_a.city', 'test_a.country', 'test_a.state', 'test_b.count']
+```
+
+## Filter Members and Values
+You can extract filter members along with their values using the `extract_filters_members_with_values` function:
+
+```python
+from cube_utils.query_parser import extract_filters_members_with_values
+
+# Example payload with complex filters
+payload = {
+    "filters": [
+        {"values": ["US", "CA"], "member": "test_a.country", "operator": "equals"},
+        {
+            "or": [
+                {"values": ["New York"], "member": "test_a.city", "operator": "equals"},
+                {"member": "test_a.state", "operator": "set"}
+            ]
+        }
+    ],
+    "segments": ["test_b.premium_users"]
+}
+
+# Extract filter members with their values
+filter_members = extract_filters_members_with_values(payload)
+print(filter_members)  
+# Output: [('test_a.country', ['CA', 'US']), ('test_a.city', ['New York']), ('test_a.state', None), ('test_b.premium_users', None)]
 ```
 
 ## URL Parameter Extraction
