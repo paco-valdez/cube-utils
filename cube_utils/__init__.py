@@ -12,7 +12,8 @@ def file_repository(path):
 
                 f = open(path, 'r')
                 content = f.read()
-                f.close()
+                with open(path, 'r') as f:
+                    content = f.read()
 
                 files.append({
                     'fileName': fileName,
