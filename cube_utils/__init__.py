@@ -5,25 +5,30 @@ from typing import Union, Callable, Dict, Any
 def file_repository(path):
     files = []
 
-    for (dirpath, dirnames, filenames) in os.walk(path):
+    for dirpath, dirnames, filenames in os.walk(path):
         for fileName in filenames:
-            if fileName.endswith(".js") or fileName.endswith(".yml") or fileName.endswith(".yaml") or fileName.endswith(".jinja") or fileName.endswith(".py"):
+            if (
+                fileName.endswith(".js")
+                or fileName.endswith(".yml")
+                or fileName.endswith(".yaml")
+                or fileName.endswith(".jinja")
+                or fileName.endswith(".py")
+            ):
                 path = os.path.join(dirpath, fileName)
 
-                f = open(path, 'r')
+                f = open(path, "r")
                 content = f.read()
-                with open(path, 'r') as f:
+                with open(path, "r") as f:
                     content = f.read()
 
-                files.append({
-                    'fileName': fileName,
-                    'content': content
-                })
+                files.append({"fileName": fileName, "content": content})
 
     return files
 
+
 class ConfigurationException(Exception):
     pass
+
 
 class RequestContext:
     url: str
@@ -45,7 +50,9 @@ class Configuration:
     allow_js_duplicate_props_in_schema: bool
     jwt: Dict
     scheduled_refresh_timer: Any
-    scheduled_refresh_time_zones: Union[Callable[[RequestContext], list[str]], list[str]]
+    scheduled_refresh_time_zones: Union[
+        Callable[[RequestContext], list[str]], list[str]
+    ]
     scheduled_refresh_concurrency: int
     scheduled_refresh_batch_size: int
     compiler_cache_size: int
@@ -70,6 +77,7 @@ class Configuration:
     check_auth: Callable
     check_sql_auth: Callable
     can_switch_sql_user: Callable
+    query_rewrite: Callable[[dict, RequestContext], dict]
     extend_context: Callable
     scheduled_refresh_contexts: Callable
     context_to_api_scopes: Callable
@@ -136,12 +144,18 @@ class Configuration:
             return AttrRef(self, func)
 
         if not callable(func):
-            raise ConfigurationException("@config decorator must be used with functions, actual: '%s'" % type(func).__name__)
+            raise ConfigurationException(
+                "@config decorator must be used with functions, actual: '%s'"
+                % type(func).__name__
+            )
 
         if hasattr(self, func.__name__):
             setattr(self, func.__name__, func)
         else:
-            raise ConfigurationException("Unknown configuration property: '%s'" % func.__name__)
+            raise ConfigurationException(
+                "Unknown configuration property: '%s'" % func.__name__
+            )
+
 
 class AttrRef:
     config: Configuration
@@ -153,21 +167,29 @@ class AttrRef:
 
     def __call__(self, func):
         if not callable(func):
-            raise ConfigurationException("@config decorator must be used with functions, actual: '%s'" % type(func).__name__)
+            raise ConfigurationException(
+                "@config decorator must be used with functions, actual: '%s'"
+                % type(func).__name__
+            )
 
         if hasattr(self.config, self.attribute):
             setattr(self.config, self.attribute, func)
         else:
-            raise ConfigurationException("Unknown configuration property: '%s'" % func.__name__)
+            raise ConfigurationException(
+                "Unknown configuration property: '%s'" % func.__name__
+            )
 
         return func
+
 
 config = Configuration()
 # backward compatibility
 settings = config
 
+
 class TemplateException(Exception):
     pass
+
 
 class TemplateContext:
     functions: dict[str, Callable]
@@ -181,19 +203,28 @@ class TemplateContext:
 
     def add_function(self, name, func):
         if not callable(func):
-            raise TemplateException("function registration must be used with functions, actual: '%s'" % type(func).__name__)
+            raise TemplateException(
+                "function registration must be used with functions, actual: '%s'"
+                % type(func).__name__
+            )
 
         self.functions[name] = func
 
     def add_variable(self, name, val):
         if name in self.functions:
-            raise TemplateException("unable to register variable: name '%s' is already in use for function" % name)
+            raise TemplateException(
+                "unable to register variable: name '%s' is already in use for function"
+                % name
+            )
 
         self.variables[name] = val
 
     def add_filter(self, name, func):
         if not callable(func):
-            raise TemplateException("function registration must be used with functions, actual: '%s'" % type(func).__name__)
+            raise TemplateException(
+                "function registration must be used with functions, actual: '%s'"
+                % type(func).__name__
+            )
 
         self.filters[name] = func
 
@@ -210,6 +241,7 @@ class TemplateContext:
 
         self.add_filter(func.__name__, func)
         return func
+
 
 class TemplateFunctionRef:
     context: TemplateContext
@@ -236,9 +268,11 @@ class TemplateFilterRef:
         self.context.add_filter(self.attribute, func)
         return func
 
+
 def context_func(func):
     func.cube_context_func = True
     return func
+
 
 class SafeString(str):
     is_safe: bool
@@ -246,8 +280,9 @@ class SafeString(str):
     def __init__(self, v: str):
         self.is_safe = True
 
+
 __all__ = [
-    'context_func',
-    'TemplateContext',
-    'SafeString',
+    "context_func",
+    "TemplateContext",
+    "SafeString",
 ]
