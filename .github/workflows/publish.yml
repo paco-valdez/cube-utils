@@ -19,3 +19,32 @@ jobs:
   
         - name: Publish package distributions to PyPI
           run: pdm publish
+
+    npm-publish:
+      name: upload release to npm
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
+        id-token: write
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Set up Node.js
+          uses: actions/setup-node@v2
+          with:
+            node-version: '18'
+            registry-url: 'https://registry.npmjs.org'
+
+        - name: Install JavaScript dependencies
+          working-directory: ./cube-utils-js
+          run: npm install
+
+        - name: Run JavaScript tests
+          working-directory: ./cube-utils-js
+          run: npm test
+
+        - name: Publish package to npm
+          working-directory: ./cube-utils-js
+          run: npm publish --provenance --access public
+          env:
+            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
