@@ -18,7 +18,5 @@
   ],
   "author": "",
   "license": "MIT",
-  "devDependencies": {
-    "node:test": "*"
-  }
+  "devDependencies": {}
 }
