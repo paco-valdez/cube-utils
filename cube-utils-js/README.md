@@ -7,7 +7,7 @@ This is a JavaScript port of the Python `cube-utils` library, providing the same
 ## Installation
 
 ```bash
-npm install 
+npm install cube-utils-js
 ```
 
 ## Features
@@ -27,7 +27,7 @@ import {
   extractMembers,
   extractFiltersMembers,
   extractFiltersMembersWithValues
-} from '';
+} from 'cube-utils-js';
 
 const payload = {
   dimensions: ['sales.city', 'sales.country'],
@@ -65,7 +65,7 @@ const membersWithValues = extractFiltersMembersWithValues(payload);
 ### URL Parser
 
 ```javascript
-import { extractUrlParams } from '';
+import { extractUrlParams } from 'cube-utils-js';
 
 const url = '/cubejs-api/v1/load?query=%7B%22measures%22%3A%5B%22sales.count%22%5D%7D&foo=bar';
 const params = extractUrlParams(url);
