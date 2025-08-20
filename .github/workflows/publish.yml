@@ -7,6 +7,9 @@ jobs:
     pypi-publish:
       name: upload release to PyPI
       runs-on: ubuntu-latest
+      environment:
+          name: Prod
+          url: https://pypi.org/p/cube-utils
       permissions:
         # This permission is needed for private repositories.
         contents: read
@@ -15,14 +18,26 @@ jobs:
       steps:
         - uses: actions/checkout@v4
   
-        - uses: pdm-project/setup-pdm@v4
-  
+        # Install PDM
+        - name: Install PDM
+          run: python -m pip install --upgrade pip pdm
+
+        # Install build dependencies
+        - name: Install build dependencies
+          run: pdm install --prod
+
+        # Build the package
+        - name: Build package
+          run: pdm build
+
         - name: Publish package distributions to PyPI
-          run: pdm publish
+          uses: pypa/gh-action-pypi-publish@release/v1
 
     npm-publish:
       name: upload release to npm
       runs-on: ubuntu-latest
+      environment:
+        name: Prod
       permissions:
         contents: read
         id-token: write
