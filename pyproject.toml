@@ -1,6 +1,6 @@
 [project]
 name = "cube-utils"
-version = "0.1.6"
+version = "0.1.7"
 description = "Python functions for Cube projects using cube.py config file."
 authors = [
     {name = "Paco Valdez", email = "paco.valdez@berkeley.edu"},

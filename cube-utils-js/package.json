@@ -1,6 +1,6 @@
 {
   "name": "cube-utils",
-  "version": "0.1.0",
+  "version": "0.1.7",
   "description": "JavaScript utilities for parsing and extracting information from Cube.js query payloads",
   "main": "src/index.js",
   "type": "module",
