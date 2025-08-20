@@ -171,4 +171,4 @@ cython_debug/
 .pypirc
 
 # build objects
-src/
+/src/

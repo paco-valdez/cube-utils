@@ -1,0 +1,22 @@
+{
+  "name": "cube-utils",
+  "version": "0.1.0",
+  "description": "JavaScript utilities for parsing and extracting information from Cube.js query payloads",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "test:watch": "node --test --watch"
+  },
+  "keywords": [
+    "cube",
+    "cubejs",
+    "query",
+    "parser",
+    "analytics",
+    "url-parser"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {}
+}
