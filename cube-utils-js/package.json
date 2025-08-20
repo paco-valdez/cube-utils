@@ -18,5 +18,9 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paco-valdez/cube-utils.git"
+  },
   "devDependencies": {}
 }
