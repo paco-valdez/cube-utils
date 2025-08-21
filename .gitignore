@@ -172,3 +172,9 @@ cython_debug/
 
 # build objects
 /src/
+
+# JavaScript/Node.js
+node_modules/
+cube-utils-js/dist/
+cube-utils-js/test-*.mjs
+cube-utils-js/test-*.cjs

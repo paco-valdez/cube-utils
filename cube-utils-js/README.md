@@ -16,10 +16,13 @@ npm install cube-utils-js
 - **URL parameter extraction** - Parse and decode query parameters from URLs
 - **SQL expression parsing** - Find member references in `${cube.member}` format
 - **Boolean logic handling** - Process nested AND/OR filter conditions
+- **Dual module support** - Works with both ES6 imports and CommonJS requires
 
 ## Usage
 
-### Query Parser
+The package supports both ES6 imports and CommonJS requires:
+
+### ES6 Import (Recommended)
 
 ```javascript
 import { 
@@ -28,6 +31,23 @@ import {
   extractFiltersMembers,
   extractFiltersMembersWithValues
 } from 'cube-utils-js';
+```
+
+### CommonJS Require
+
+```javascript
+const { 
+  extractCubes,
+  extractMembers,
+  extractFiltersMembers,
+  extractFiltersMembersWithValues
+} = require('cube-utils-js');
+```
+
+### Query Parser
+
+```javascript
+// Works with either import style above
 
 const payload = {
   dimensions: ['sales.city', 'sales.country'],
@@ -65,7 +85,11 @@ const membersWithValues = extractFiltersMembersWithValues(payload);
 ### URL Parser
 
 ```javascript
+// ES6 import
 import { extractUrlParams } from 'cube-utils-js';
+
+// Or CommonJS require  
+const { extractUrlParams } = require('cube-utils-js');
 
 const url = '/cubejs-api/v1/load?query=%7B%22measures%22%3A%5B%22sales.count%22%5D%7D&foo=bar';
 const params = extractUrlParams(url);
