@@ -44,6 +44,10 @@ jobs:
       working-directory: ./cube-utils-js
       run: npm install
 
+    - name: Build JavaScript package
+      working-directory: ./cube-utils-js
+      run: npm run build
+
     - name: Run JavaScript tests
       working-directory: ./cube-utils-js
       run: npm test

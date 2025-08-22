@@ -1,12 +1,21 @@
 {
   "name": "cube-utils-js",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "JavaScript utilities for parsing and extracting information from Cube query payloads",
-  "main": "src/index.js",
+  "main": "dist/index.cjs",
+  "module": "src/index.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
+    "build": "node scripts/build.js",
     "test": "node --test",
-    "test:watch": "node --test --watch"
+    "test:watch": "node --test --watch",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "cube",
@@ -20,7 +29,8 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paco-valdez/cube-utils.git"
+    "url": "git+https://github.com/paco-valdez/cube-utils.git",
+    "directory": "cube-utils-js"
   },
   "devDependencies": {}
 }
