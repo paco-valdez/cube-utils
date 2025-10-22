@@ -222,13 +222,13 @@ function extractFiltersMembersWithValues(payload) {
     }
 
     if ('filters' in payloadObj) {
-        for (const filterItem of payload.filters) {
+        for (const filterItem of payloadObj.filters) {
             extractFromFilter(filterItem);
         }
     }
 
     if ('segments' in payloadObj) {
-        for (const seg of payload.segments) {
+        for (const seg of payloadObj.segments) {
             if (typeof seg === 'object' && seg !== null && isPushdownMember(seg)) {
                 const exprMembers = new Map();
                 const sqls = [];
