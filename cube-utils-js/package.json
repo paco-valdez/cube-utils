@@ -1,6 +1,6 @@
 {
   "name": "cube-utils-js",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "JavaScript utilities for parsing and extracting information from Cube query payloads",
   "main": "dist/index.cjs",
   "module": "src/index.js",
