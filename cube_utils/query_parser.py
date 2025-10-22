@@ -1,6 +1,30 @@
 from collections import defaultdict
-from typing import List, Dict, Any
-from typing import Sequence
+from typing import List, Dict, Any, Sequence, Union
+
+def _ensure_dict_payload(payload: Any) -> Dict[str, Any]:
+    """Validate and normalise the query payload.
+
+    The original implementation of the parser expected a dictionary.  In
+    practice, Cube.js may send a string for simple metadata queries.
+    This helper returns the payload unchanged if it is already a
+    ``dict``.  If a ``str`` is passed, it returns an empty dict so that
+    downstream functions can operate safely and return empty results.
+    For any other type a :class:`TypeError` is raised with a clear
+    message.
+
+    Args:
+        payload: The payload supplied by the caller.
+
+    Returns:
+        A dictionary representation of the payload.
+    """
+    if isinstance(payload, dict):
+        return payload
+    if isinstance(payload, str):
+        # Treat string payloads as empty queries.
+        return {}
+    raise TypeError(
+        f"Payload must be a dict or str, got {type(payload).__name__}")
 
 import re
 
@@ -18,12 +42,14 @@ def is_pushdown_member(member: Any) -> bool:
 
 
 # Function to extract cubes from a query payload
-def extract_cubes(payload: Dict[str, Any]) -> List[str]:
+def extract_cubes(payload: Union[Dict[str, Any], str]) -> List[str]:
     """
     Extracts unique cubes from the given query payload.
     :param payload: The query payload containing dimensions, measures, filters, segments, and time dimensions.
     :return: A list of unique cube names.
     """
+    # Ensure payload is a dict; convert string payloads to empty dict.
+    payload = _ensure_dict_payload(payload)
     cubes = set()
     members = extract_members(payload)
     for member in members:
@@ -34,7 +60,7 @@ def extract_cubes(payload: Dict[str, Any]) -> List[str]:
 
 # Function to extract cube members
 def extract_members(
-    payload: Dict[str, Any],
+    payload: Union[Dict[str, Any], str],
     query_keys: Sequence[str] = (
         "dimensions",
         "measures",
@@ -48,6 +74,8 @@ def extract_members(
     :param payload: The query payload containing dimensions, measures, filters, segments, and time dimensions.
     :return: A list of unique members in the format 'cubeName.expressionName'.
     """
+    # Guard payload type
+    payload = _ensure_dict_payload(payload)
     members = set()  # Use a set to ensure uniqueness
 
     for key in query_keys:
@@ -128,7 +156,7 @@ def extract_members_from_filter(filter_item: Dict[str, Any]) -> set:
 
 
 # Function to extract filters only from a query payload
-def extract_filters_members(payload: Dict[str, Any]) -> List[str]:
+def extract_filters_members(payload: Union[Dict[str, Any], str]) -> List[str]:
     """
     Extracts the members from filters from the given query payload.
     :param payload: The query payload containing dimensions, measures, filters, segments, and time dimensions.
@@ -139,10 +167,11 @@ def extract_filters_members(payload: Dict[str, Any]) -> List[str]:
         "segments",
     ]
 
+    payload = _ensure_dict_payload(payload)
     return extract_members(payload, query_keys=query_keys)
 
 
-def extract_filters_members_with_values(payload: Dict[str, Any]) -> List[tuple]:
+def extract_filters_members_with_values(payload: Union[Dict[str, Any], str]) -> List[tuple]:
     """
     Extracts (member, value) tuples from filters and segments in the given query payload.
     For filters, value is the 'values' field if present, otherwise None.
@@ -170,6 +199,7 @@ def extract_filters_members_with_values(payload: Dict[str, Any]) -> List[tuple]:
             for cond in filter_item["or"]:
                 extract_from_filter(cond)
 
+    payload = _ensure_dict_payload(payload)
     if "filters" in payload:
         for filter_item in payload["filters"]:
             extract_from_filter(filter_item)
