@@ -157,6 +157,11 @@ class TestExtractCubes(unittest.TestCase):
         expected_cubes = []
         self.assertEqual(extract_cubes(payload), expected_cubes)
 
+    def test_extract_cubes_with_string_payload(self):
+        payload = "just a string"
+        expected_cubes = []
+        self.assertEqual(extract_cubes(payload), expected_cubes)
+
 
 class TestExtractMembers(unittest.TestCase):
 
@@ -247,6 +252,11 @@ class TestExtractMembers(unittest.TestCase):
         payload = {"segments": ["test_a.us_segment"]}
         expected_members = ["test_a.us_segment"]
         self.assertEqual(sorted(extract_members(payload)), sorted(expected_members))
+
+    def test_extract_members_with_string_payload(self):
+        payload = "just a string"
+        expected_members = []
+        self.assertEqual(extract_members(payload), expected_members)
 
     def test_extract_members_with_timeDimensions_only(self):
         payload = {
@@ -380,6 +390,11 @@ class TestExtractFiletrMembers(unittest.TestCase):
         self.assertEqual(
             sorted(extract_filters_members(payload)), sorted(expected_members)
         )
+
+    def test_extract_filters_members_with_string_payload(self):
+        payload = "just a string"
+        expected_members = []
+        self.assertEqual(extract_filters_members(payload), expected_members)
 
     def test_extract_filters_members_with_empty_payload(self):
         payload = {}
@@ -622,6 +637,13 @@ class TestExtractFilterMembersWithValues(unittest.TestCase):
         payload = {"invalid": ["test_a.city", "test_a.country", "test_a.state"]}
         expected_members = []
         self.assertEqual(extract_filters_members_with_values(payload), expected_members)
+
+    def test_extract_filters_members_with_values_with_string_payload(self):
+        payload = "just a string"
+        expected_members = []
+        self.assertEqual(
+            extract_filters_members_with_values(payload), expected_members
+        )
 
     def test_pushdown_filters(self):
         payload = {

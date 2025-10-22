@@ -154,8 +154,15 @@ test('extractCubes with timeDimensions only', () => {
     assert.deepStrictEqual(extractCubes(payload).sort(), expectedCubes.sort());
 });
 
-test('extractCubes with empty payload', () => {
-    const payload = {};
+test('extractCubes with empty payload', () => { 
+    const payload = {}; 
+    const expectedCubes = []; 
+    assert.deepStrictEqual(extractCubes(payload), expectedCubes); 
+}); 
+
+// New tests for string payload handling
+test('extractCubes with string payload', () => {
+    const payload = 'metadata query';
     const expectedCubes = [];
     assert.deepStrictEqual(extractCubes(payload), expectedCubes);
 });
@@ -192,6 +199,12 @@ test('extractMembers with all fields', () => {
         'test_d.us_segment'
     ];
     assert.deepStrictEqual(extractMembers(payload).sort(), expectedMembers.sort());
+});
+
+test('extractMembers with string payload', () => {
+    const payload = 'metadata query';
+    const expectedMembers = [];
+    assert.deepStrictEqual(extractMembers(payload), expectedMembers);
 });
 
 test('extractMembers complex boolean logic', () => {
@@ -573,6 +586,12 @@ test('extractFiltersMembersWithValues with empty payload', () => {
 
 test('extractFiltersMembersWithValues with invalid keywords', () => {
     const payload = { invalid: ['test_a.city', 'test_a.country', 'test_a.state'] };
+    const expectedMembers = [];
+    assert.deepStrictEqual(extractFiltersMembersWithValues(payload), expectedMembers);
+});
+
+test('extractFiltersMembersWithValues with string payload', () => {
+    const payload = 'metadata query';
     const expectedMembers = [];
     assert.deepStrictEqual(extractFiltersMembersWithValues(payload), expectedMembers);
 });

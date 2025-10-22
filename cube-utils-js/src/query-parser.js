@@ -4,6 +4,22 @@
  * @param {any} member - The member to check.
  * @returns {boolean} True if the member is a pushdown member, false otherwise.
  */
+/**
+ * Ensure the payload is an object, converting string payloads to an empty object.
+ * This mirrors Cube.js's behaviour where metadata queries are represented as strings.
+ * @param {any} payload
+ * @returns {Object}
+ */
+function ensureObjectPayload(payload) {
+    if (typeof payload === 'object' && payload !== null) {
+        return payload;
+    }
+    if (typeof payload === 'string') {
+        return {};
+    }
+    throw new TypeError('payload must be an object or string');
+}
+
 function isPushdownMember(member) {
     return (
         typeof member === 'object' &&
@@ -19,8 +35,9 @@ function isPushdownMember(member) {
  * @returns {string[]} A list of unique cube names.
  */
 function extractCubes(payload) {
+    const payloadObj = ensureObjectPayload(payload);
     const cubes = new Set();
-    const members = extractMembers(payload);
+    const members = extractMembers(payloadObj);
     for (const member of members) {
         const cube = member.split('.')[0];
         cubes.add(cube);
@@ -38,11 +55,12 @@ function extractMembers(
     payload,
     queryKeys = ['dimensions', 'measures', 'filters', 'segments', 'timeDimensions']
 ) {
+    const payloadObj = ensureObjectPayload(payload);
     const members = new Set();
 
     for (const key of queryKeys) {
-        if (key in payload) {
-            for (const item of payload[key]) {
+        if (key in payloadObj) {
+            for (const item of payloadObj[key]) {
                 if (isPushdownMember(item)) {
                     // Try to extract from expression or definition
                     let exprMembers = new Set();
@@ -155,8 +173,9 @@ function extractMembersFromFilter(filterItem) {
  * @returns {string[]} A list of members.
  */
 function extractFiltersMembers(payload) {
+    const payloadObj = ensureObjectPayload(payload);
     const queryKeys = ['filters', 'segments'];
-    return extractMembers(payload, queryKeys);
+    return extractMembers(payloadObj, queryKeys);
 }
 
 /**
@@ -169,6 +188,7 @@ function extractFiltersMembers(payload) {
  * @returns {Array<[string, any]>} Array of [member, values] tuples.
  */
 function extractFiltersMembersWithValues(payload) {
+    const payloadObj = ensureObjectPayload(payload);
     const result = new Map();
 
     function extractFromFilter(filterItem) {
@@ -201,14 +221,14 @@ function extractFiltersMembersWithValues(payload) {
         }
     }
 
-    if ('filters' in payload) {
-        for (const filterItem of payload.filters) {
+    if ('filters' in payloadObj) {
+        for (const filterItem of payloadObj.filters) {
             extractFromFilter(filterItem);
         }
     }
 
-    if ('segments' in payload) {
-        for (const seg of payload.segments) {
+    if ('segments' in payloadObj) {
+        for (const seg of payloadObj.segments) {
             if (typeof seg === 'object' && seg !== null && isPushdownMember(seg)) {
                 const exprMembers = new Map();
                 const sqls = [];

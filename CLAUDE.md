@@ -44,15 +44,22 @@ npm publish
 Both Python and JavaScript implementations provide identical functionality:
 
 **Query Parser** (`cube_utils/query_parser.py` & `cube-utils-js/src/query-parser.js`):
-- `extract_cubes()` / `extractCubes()` - Extracts unique cube names from query payloads
-- `extract_members()` / `extractMembers()` - Extracts all members (dimensions, measures, filters, segments, timeDimensions)
-- `extract_filters_members()` / `extractFiltersMembers()` - Extracts only members from filters and segments
-- `extract_filters_members_with_values()` / `extractFiltersMembersWithValues()` - Extracts filter members with their values as tuples
-- `extract_members_from_expression()` / `extractMembersFromExpression()` - Parses SQL expressions to find ${cube.member} patterns
-- `extract_members_from_filter()` / `extractMembersFromFilter()` - Handles nested boolean logic (AND/OR) in filters
+  - `extract_cubes()` / `extractCubes()` - Extracts unique cube names from query payloads
+  - `extract_members()` / `extractMembers()` - Extracts all members (dimensions, measures, filters, segments, timeDimensions)
+  - `extract_filters_members()` / `extractFiltersMembers()` - Extracts only members from filters and segments
+  - `extract_filters_members_with_values()` / `extractFiltersMembersWithValues()` - Extracts filter members with their values as tuples
+  - `extract_members_from_expression()` / `extractMembersFromExpression()` - Parses SQL expressions to find ${cube.member} patterns
+  - `extract_members_from_filter()` / `extractMembersFromFilter()` - Handles nested boolean logic (AND/OR) in filters
 
 **URL Parser** (`cube_utils/url_parser.py` & `cube-utils-js/src/url-parser.js`):
-- `extract_url_params()` / `extractUrlParams()` - Extracts and URL-decodes query parameters from URLs
+  - `extract_url_params()` / `extractUrlParams()` - Extracts and URL‑decodes query parameters from URLs
+
+## AGENTS.md
+This file contains project‑wide guidelines that the agent follows when adding or modifying code.  It includes
+instructions for:
+* ensuring consistent public API across languages,
+* writing new files via `apply_patch`,
+* and providing fallback instructions when the agent cannot run a command.
 
 ### Key Data Structures
 
